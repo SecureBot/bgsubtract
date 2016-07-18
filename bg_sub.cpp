@@ -85,6 +85,16 @@ void MyCallbackForVarThresholdGen(int iValueForVarThresholdGen, void*)
 	pMOG2->setVarThresholdGen(iValueForVarThresholdGen);
 }
 
+void MyCallbackForBlur(int iValueForBlur, void *userdata)
+{
+	if (iValueForBlur <= 0) {
+		return;
+	}
+	Mat img = *((Mat*)userdata);
+	blur(img, img, Size(iValueForBlur, iValueForBlur)); // Blur the image
+	imshow("Frame", img);
+}
+
 /**
  * @function processVideo
  */
@@ -101,10 +111,12 @@ void processVideo(char* videoFilename) {
 	int iValueForShadowValue = 0;
 	int iValueForNMixtures = 3;
 	int iValueForHistory = 200;
-	int iValueForShadowThreshold = 50;
+	int iValueForShadowThreshold = 10;
 	int iValueForVarThreshold = 400;
 	int iValueForBackgroundRatio = 60;
 	int iValueForVarThresholdGen = 2;
+
+	int iValueForBlur = 5;
 
 
     //read input data. ESC or 'q' for quitting
@@ -115,13 +127,15 @@ void processVideo(char* videoFilename) {
             cerr << "Exiting..." << endl;
             exit(EXIT_FAILURE);
         }
-		/// Convert image to gray and blur it
-		//cvtColor(frame, frame, CV_BGR2GRAY);
-		blur(frame, frame, Size(5, 5));
+
+		
+		//cvtColor(frame, frame, CV_BGR2GRAY);// Convert the image to grayscale
+		createTrackbar("Blur", "Frame", &iValueForBlur, 20, MyCallbackForBlur, (void*)(&frame));
+		MyCallbackForBlur(iValueForBlur, &frame);
+
 		pMOG2->apply(frame, fgMaskMOG2, -.1); // (original, new mat, learing rate)
 
-
-		//Create track bar to change brightness
+		//Create trackbars to change backgroundsubtractorMOG2 parameters
 		createTrackbar("ShadowValue", "FG Mask MOG 2", &iValueForShadowValue, 254, MyCallbackForShadowValue);
 		createTrackbar("NMixtures", "FG Mask MOG 2", &iValueForNMixtures, 7, MyCallbackForNMixtures);
 		createTrackbar("History", "FG Mask MOG 2", &iValueForHistory, 500, MyCallbackForHistory);
@@ -135,9 +149,6 @@ void processVideo(char* videoFilename) {
 
 		morph(fgMaskMOG2);
 		imshow("Morph", fgMaskMOG2);
-
-        //show the current frame and the fg masks
-        imshow("Frame", frame);
 
         //get the input from the keyboard
         keyboard = waitKey( 30 );
