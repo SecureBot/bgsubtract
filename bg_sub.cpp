@@ -65,7 +65,7 @@ void MyCallbackForHistory(int iValueForHistory, void*)
 
 void MyCallbackForShadowThreshold(int iValueForShadowThreshold, void*)
 {
-	double iShadowThreshold = (iValueForShadowThreshold / 100);
+	double iShadowThreshold = (iValueForShadowThreshold / (double)100);
 	pMOG2->setShadowThreshold(iShadowThreshold);
 }
 
@@ -76,7 +76,7 @@ void MyCallbackForVarThreshold(int iValueForVarThreshold, void*)
 
 void MyCallbackForBackgroundRatio(int iValueForBackgroundRatio, void*)
 {
-	double iBackgroundRatio = (iValueForBackgroundRatio / 100);
+	double iBackgroundRatio = (iValueForBackgroundRatio / (double)100);
 	pMOG2->setBackgroundRatio(iBackgroundRatio);
 }
 
@@ -125,9 +125,9 @@ void processVideo(char* videoFilename) {
 		createTrackbar("ShadowValue", "FG Mask MOG 2", &iValueForShadowValue, 254, MyCallbackForShadowValue);
 		createTrackbar("NMixtures", "FG Mask MOG 2", &iValueForNMixtures, 7, MyCallbackForNMixtures);
 		createTrackbar("History", "FG Mask MOG 2", &iValueForHistory, 500, MyCallbackForHistory);
-		createTrackbar("ShadowThreshold", "FG Mask MOG 2", &iValueForShadowThreshold, 100, MyCallbackForShadowThreshold); // Not quite working right
+		createTrackbar("ShadowThreshold", "FG Mask MOG 2", &iValueForShadowThreshold, 100, MyCallbackForShadowThreshold);
 		createTrackbar("VarThreshold", "FG Mask MOG 2", &iValueForVarThreshold, 500, MyCallbackForVarThreshold);
-		//createTrackbar("BGRatio", "FG Mask MOG 2", &iValueForBackgroundRatio, 100, MyCallbackForBackgroundRatio); //Causes issues
+		createTrackbar("BGRatio", "FG Mask MOG 2", &iValueForBackgroundRatio, 100, MyCallbackForBackgroundRatio);
 		createTrackbar("ThresholdGen", "FG Mask MOG 2", &iValueForVarThresholdGen, 5, MyCallbackForVarThresholdGen);
 		imshow("FG Mask MOG 2", fgMaskMOG2);
 
